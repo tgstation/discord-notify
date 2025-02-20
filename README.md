@@ -11,7 +11,7 @@ This action sends a notification to Discord.
 | Input              |      Required      |  Default  | Description                                                                                                               |
 | ------------------ | :----------------: | :-------: | ------------------------------------------------------------------------------------------------------------------------- |
 | `webhook_url`      | :white_check_mark: |           | Webhook URL from Discord                                                                                                  |
-| `title`            | :white_check_mark: |           | Title for card                                                                                                            |
+| `title`            |                    |           | Title for card                                                                                                            |
 | `message`          | :white_check_mark: |           | Content of card                                                                                                           |
 | `include_image`    |                    |  `false`  | If action is used in a pull request, attach the preview image for it to the card. Can be overridden by `custom_image_url` |
 | `colour`           |                    | `#3371FF` | Colour for the edge of the card in hex                                                                                    |
