@@ -9,8 +9,8 @@ This action sends a notification to Discord.
 | `webhook_url`      | :white_check_mark: |           | Webhook URL(s) from Discord. comma seperated                                                                                                  |
 | `title`            |                    |           | Title for card                                                                                                            |
 | `message`          |                    |           | Content of card                                                                                                           |
-| `include_image`    |                    |  `false`  | If action is used in a pull request, attach the preview image for it to the card. Can be overridden by `custom_image_url` |
-| `colour`           |                    | `#3371FF` | Colour for the edge of the card in hex                                                                                    |
+| `include_image`    |                    |  `true`  | If action is used in a pull request, attach the preview image for it to the card. Can be overridden by `custom_image_url` |
+| `colour`           |                    |           | Colour for the edge of the card in hex                                                                                    |
 | `username`         |                    | `GitHub`  | Username to send message as                                                                                               |
 | `avatar_url`       |                    |           | Avatar to use for user                                                                                                    |
 | `custom_image_url` |                    |           | Attach custom image to card, overrides pull request image if set. Requires `include_image` to be `true`                   |
