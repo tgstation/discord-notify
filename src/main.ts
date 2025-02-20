@@ -80,7 +80,10 @@ async function run(): Promise<void> {
     }
 
     if (include_image) {
-      if (github.context.eventName === 'pull_request') {
+      if (
+        github.context.eventName === 'pull_request' ||
+        github.context.eventName === 'pull_request_target'
+      ) {
         embed.image = {
           url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${github.context.payload.pull_request?.number}`
         }

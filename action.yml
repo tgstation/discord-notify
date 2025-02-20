@@ -2,11 +2,11 @@ name: 'Discord Notify'
 description: 'Send a Discord message to a webhook'
 inputs:
   webhook_url:
-    description: 'Webhook URL from Discord'
+    description: 'Webhook URL(s) from Discord. if multiple seperate with commas'
     required: true
     default: ''
   title:
-    description: 'Title for card'
+    description: 'Title for card. Defaults to PR NUMBER ACTION by USER'
     required: false
     default: ''
   message:
@@ -16,7 +16,7 @@ inputs:
   include_image:
     description: 'If action is used in a pull request, attach the preview image for it to the card. Required for custom_image_url'
     required: false
-    default: 'false'
+    default: true
   avatar_url:
     description: 'Avatar to use for user'
     required: false
@@ -26,7 +26,7 @@ inputs:
     required: false
     default: 'GitHub'
   colour:
-    description: 'Colour for the edge of the card in hex'
+    description: 'Colour for the edge of the card in hex. Defaults to the usual red/green/purple github colors for actions.'
     required: false
     default: ''
   custom_image_url:
@@ -34,7 +34,7 @@ inputs:
     required: false
     default: ''
   title_url:
-    description: 'Make the title of the card a link'
+    description: 'Make the title of the card a link. Sets it to this string.'
     required: false
     default: ''
 

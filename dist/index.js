@@ -101,7 +101,8 @@ function run() {
                 embed.url = title_url;
             }
             if (include_image) {
-                if (github.context.eventName === 'pull_request') {
+                if (github.context.eventName === 'pull_request' ||
+                    github.context.eventName === 'pull_request_target') {
                     embed.image = {
                         url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${(_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.number}`
                     };
