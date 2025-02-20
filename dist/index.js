@@ -8,7 +8,11 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -42,12 +46,12 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 function run() {
-    var _a;
+    var _a, _b, _c, _d, _e, _f, _g;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const webhookUrl = core.getInput('webhook_url', { required: true });
-            const title = core.getInput('title', { required: true });
-            const message = core.getInput('message', { required: true });
+            const title = core.getInput('title');
+            const message = core.getInput('message');
             const avatar_url = core.getInput('avatar_url');
             const username = core.getInput('username');
             const colour = core.getInput('colour');
@@ -55,11 +59,43 @@ function run() {
             const custom_image_url = core.getInput('custom_image_url');
             const title_url = core.getInput('title_url');
             const embed = {
-                title,
                 description: message
             };
+            if (title === '') {
+                const prNumber = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number; // PRs # number
+                const prUser = (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.user.login; // PR creator
+                const actionUser = github.context.actor; // The user who performed the action
+                const prMergedBy = ((_d = (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.merged_by) === null || _d === void 0 ? void 0 : _d.login) || 'Unknown';
+                if (github.context.payload.action === 'opened') {
+                    embed.title = `**Pull Request #${prNumber} Opened by ${prUser}**`;
+                }
+                else if (github.context.payload.action === 'reopened') {
+                    embed.title = `**Pull Request #${prNumber} Reopened by ${actionUser}**`;
+                }
+                else if (github.context.payload.action === 'closed' &&
+                    ((_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.merged)) {
+                    embed.title = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`;
+                }
+                else if (github.context.payload.action === 'closed') {
+                    embed.title = `**Pull Request #${prNumber} Closed by ${actionUser}**`;
+                }
+                else {
+                    embed.title = `**Pull Request #${prNumber} Event**`; // Fallback for unknown actions
+                }
+            }
             if (colour !== '') {
                 embed.color = parseInt(colour.replace('#', ''), 16);
+            }
+            else if (github.context.payload.action === 'opened' ||
+                github.context.payload.action === 'reopened') {
+                embed.color = parseInt(colour.replace('#', '#6cc644'), 16); // open or reopen. Github mantis color
+            }
+            else if (github.context.payload.action === 'closed' &&
+                ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.merged)) {
+                embed.color = parseInt(colour.replace('#', '#6e5494'), 16); // merged. github butterfly bush color
+            }
+            else {
+                embed.color = parseInt(colour.replace('#', '#bd2c00'), 16); // pr closed or error. github milano red color
             }
             if (title_url !== '') {
                 embed.url = title_url;
@@ -67,7 +103,7 @@ function run() {
             if (include_image) {
                 if (github.context.eventName === 'pull_request') {
                     embed.image = {
-                        url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${(_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number}`
+                        url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${(_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.number}`
                     };
                 }
                 if (custom_image_url !== '') {
@@ -86,11 +122,16 @@ function run() {
                 body.username = username;
             }
             core.debug(JSON.stringify(body));
-            yield (0, node_fetch_1.default)(webhookUrl, {
-                method: 'POST',
-                body: JSON.stringify(body),
-                headers: { 'Content-Type': 'application/json' }
-            });
+            const webhookUrls = webhookUrl
+                .split(',')
+                .map((url) => url.trim());
+            for (const url of webhookUrls) {
+                yield (0, node_fetch_1.default)(url, {
+                    method: 'POST',
+                    body: JSON.stringify(body),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
         }
         catch (error) {
             if (error instanceof Error)
@@ -242,7 +283,6 @@ const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
 const os = __importStar(__nccwpck_require__(2037));
 const path = __importStar(__nccwpck_require__(1017));
-const uuid_1 = __nccwpck_require__(5840);
 const oidc_utils_1 = __nccwpck_require__(8041);
 /**
  * The code to exit an action
@@ -272,20 +312,9 @@ function exportVariable(name, val) {
     process.env[name] = convertedVal;
     const filePath = process.env['GITHUB_ENV'] || '';
     if (filePath) {
-        const delimiter = `ghadelimiter_${uuid_1.v4()}`;
-        // These should realistically never happen, but just in case someone finds a way to exploit uuid generation let's not allow keys or values that contain the delimiter.
-        if (name.includes(delimiter)) {
-            throw new Error(`Unexpected input: name should not contain the delimiter "${delimiter}"`);
-        }
-        if (convertedVal.includes(delimiter)) {
-            throw new Error(`Unexpected input: value should not contain the delimiter "${delimiter}"`);
-        }
-        const commandValue = `${name}<<${delimiter}${os.EOL}${convertedVal}${os.EOL}${delimiter}`;
-        file_command_1.issueCommand('ENV', commandValue);
+        return file_command_1.issueFileCommand('ENV', file_command_1.prepareKeyValueMessage(name, val));
     }
-    else {
-        command_1.issueCommand('set-env', { name }, convertedVal);
-    }
+    command_1.issueCommand('set-env', { name }, convertedVal);
 }
 exports.exportVariable = exportVariable;
 /**
@@ -303,7 +332,7 @@ exports.setSecret = setSecret;
 function addPath(inputPath) {
     const filePath = process.env['GITHUB_PATH'] || '';
     if (filePath) {
-        file_command_1.issueCommand('PATH', inputPath);
+        file_command_1.issueFileCommand('PATH', inputPath);
     }
     else {
         command_1.issueCommand('add-path', {}, inputPath);
@@ -343,7 +372,10 @@ function getMultilineInput(name, options) {
     const inputs = getInput(name, options)
         .split('\n')
         .filter(x => x !== '');
-    return inputs;
+    if (options && options.trimWhitespace === false) {
+        return inputs;
+    }
+    return inputs.map(input => input.trim());
 }
 exports.getMultilineInput = getMultilineInput;
 /**
@@ -376,8 +408,12 @@ exports.getBooleanInput = getBooleanInput;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setOutput(name, value) {
+    const filePath = process.env['GITHUB_OUTPUT'] || '';
+    if (filePath) {
+        return file_command_1.issueFileCommand('OUTPUT', file_command_1.prepareKeyValueMessage(name, value));
+    }
     process.stdout.write(os.EOL);
-    command_1.issueCommand('set-output', { name }, value);
+    command_1.issueCommand('set-output', { name }, utils_1.toCommandValue(value));
 }
 exports.setOutput = setOutput;
 /**
@@ -506,7 +542,11 @@ exports.group = group;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function saveState(name, value) {
-    command_1.issueCommand('save-state', { name }, value);
+    const filePath = process.env['GITHUB_STATE'] || '';
+    if (filePath) {
+        return file_command_1.issueFileCommand('STATE', file_command_1.prepareKeyValueMessage(name, value));
+    }
+    command_1.issueCommand('save-state', { name }, utils_1.toCommandValue(value));
 }
 exports.saveState = saveState;
 /**
@@ -572,13 +612,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.issueCommand = void 0;
+exports.prepareKeyValueMessage = exports.issueFileCommand = void 0;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const fs = __importStar(__nccwpck_require__(7147));
 const os = __importStar(__nccwpck_require__(2037));
+const uuid_1 = __nccwpck_require__(5840);
 const utils_1 = __nccwpck_require__(5278);
-function issueCommand(command, message) {
+function issueFileCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
     if (!filePath) {
         throw new Error(`Unable to find environment variable for file command ${command}`);
@@ -590,7 +631,22 @@ function issueCommand(command, message) {
         encoding: 'utf8'
     });
 }
-exports.issueCommand = issueCommand;
+exports.issueFileCommand = issueFileCommand;
+function prepareKeyValueMessage(key, value) {
+    const delimiter = `ghadelimiter_${uuid_1.v4()}`;
+    const convertedValue = utils_1.toCommandValue(value);
+    // These should realistically never happen, but just in case someone finds a
+    // way to exploit uuid generation let's not allow keys or values that contain
+    // the delimiter.
+    if (key.includes(delimiter)) {
+        throw new Error(`Unexpected input: name should not contain the delimiter "${delimiter}"`);
+    }
+    if (convertedValue.includes(delimiter)) {
+        throw new Error(`Unexpected input: value should not contain the delimiter "${delimiter}"`);
+    }
+    return `${key}<<${delimiter}${os.EOL}${convertedValue}${os.EOL}${delimiter}`;
+}
+exports.prepareKeyValueMessage = prepareKeyValueMessage;
 //# sourceMappingURL=file-command.js.map
 
 /***/ }),
