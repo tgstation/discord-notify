@@ -46,7 +46,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 function run() {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const webhookUrl = core.getInput('webhook_url', { required: true });
@@ -101,10 +101,9 @@ function run() {
                 embed.url = title_url;
             }
             if (include_image) {
-                if (github.context.eventName === 'pull_request' ||
-                    github.context.eventName === 'pull_request_target') {
+                if (github.context.payload.pull_request) {
                     embed.image = {
-                        url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${(_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.number}`
+                        url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${github.context.payload.pull_request.number}`
                     };
                 }
                 if (custom_image_url !== '') {
