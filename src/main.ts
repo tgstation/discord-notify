@@ -65,14 +65,14 @@ async function run(): Promise<void> {
       github.context.payload.action === 'opened' ||
       github.context.payload.action === 'reopened'
     ) {
-      embed.color = parseInt(colour.replace('#', '#6cc644'), 16) // open or reopen. Github mantis color
+      embed.color = parseInt('#6cc644'.replace('#', ''), 16) // open or reopen. Github mantis color
     } else if (
       github.context.payload.action === 'closed' &&
       github.context.payload.pull_request?.merged
     ) {
-      embed.color = parseInt(colour.replace('#', '#6e5494'), 16) // merged. github butterfly bush color
+      embed.color = parseInt('#6e5494'.replace('#', ''), 16) // merged. github butterfly bush color
     } else {
-      embed.color = parseInt(colour.replace('#', '#bd2c00'), 16) // pr closed or error. github milano red color
+      embed.color = parseInt('#bd2c00'.replace('#', ''), 16) // pr closed or error. github milano red color
     }
 
     if (title_url !== '') {
