@@ -6,8 +6,14 @@ type Embed = {
   title?: string
   description: string
   color?: number
+  author?: AuthorEmbed
   image?: ImageEmbed
   url?: string
+}
+
+type AuthorEmbed = {
+  name: string
+  icon_url: string
 }
 
 type ImageEmbed = {
@@ -18,6 +24,7 @@ type Body = {
   avatar_url?: string
   username?: string
   embeds: Embed[]
+  flags: number
 }
 
 async function run(): Promise<void> {
@@ -28,6 +35,7 @@ async function run(): Promise<void> {
     const avatar_url = core.getInput('avatar_url')
     const username = core.getInput('username')
     const colour = core.getInput('colour')
+    const show_author = core.getBooleanInput('show_author')
     const include_image = core.getBooleanInput('include_image')
     const custom_image_url = core.getInput('custom_image_url')
     const title_url = core.getInput('title_url')
@@ -36,7 +44,7 @@ async function run(): Promise<void> {
       description: message
     }
 
-    if (title === '') {
+    if (title === 'GET_ACTION') {
       const prNumber = github.context.payload.pull_request?.number // PRs # number
       const prUser = github.context.payload.pull_request?.user.login // PR creator
       const actionUser = github.context.actor // The user who performed the action
@@ -57,6 +65,33 @@ async function run(): Promise<void> {
       } else {
         embed.title = `**Pull Request #${prNumber} Event**` // Fallback for unknown actions
       }
+    } else {
+      embed.title = title
+    }
+
+    if (message === 'GET_ACTION') {
+      const prNumber = github.context.payload.pull_request?.number // PRs # number
+      const prUser = github.context.payload.pull_request?.user.login // PR creator
+      const actionUser = github.context.actor // The user who performed the action
+      const prMergedBy =
+        github.context.payload.pull_request?.merged_by?.login || 'Unknown'
+
+      if (github.context.payload.action === 'opened') {
+        embed.description = `**Pull Request #${prNumber} Opened by ${prUser}**`
+      } else if (github.context.payload.action === 'reopened') {
+        embed.description = `**Pull Request #${prNumber} Reopened by ${actionUser}**`
+      } else if (
+        github.context.payload.action === 'closed' &&
+        github.context.payload.pull_request?.merged
+      ) {
+        embed.description = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`
+      } else if (github.context.payload.action === 'closed') {
+        embed.description = `**Pull Request #${prNumber} Closed by ${actionUser}**`
+      } else {
+        embed.description = `**Pull Request #${prNumber} Event**` // Fallback for unknown actions
+      }
+    } else {
+      embed.description = message
     }
 
     if (colour !== '') {
@@ -73,6 +108,15 @@ async function run(): Promise<void> {
       embed.color = parseInt('#6e5494'.replace('#', ''), 16) // merged. github butterfly bush color
     } else {
       embed.color = parseInt('#bd2c00'.replace('#', ''), 16) // pr closed or error. github milano red color
+    }
+
+    if (show_author) {
+      if (github.context.payload.pull_request) {
+        embed.author = {
+          name: github.context.payload.pull_request.user.login,
+          icon_url: github.context.payload.pull_request.user.avatar_url
+        }
+      }
     }
 
     if (title_url !== '') {
@@ -93,7 +137,8 @@ async function run(): Promise<void> {
     }
 
     const body: Body = {
-      embeds: [embed]
+      embeds: [embed],
+      flags: 0 // flags: 4 (SUPPRESS_EMBEDS)
     }
 
     if (avatar_url !== '') {

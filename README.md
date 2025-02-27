@@ -7,9 +7,10 @@ This action sends a notification to Discord.
 | Input              |      Required      |  Default  | Description                                                                                                               |
 | ------------------ | :----------------: | :-------: | ------------------------------------------------------------------------------------------------------------------------- |
 | `webhook_url`      | :white_check_mark: |           | Webhook URL(s) from Discord. comma seperated                                                                                                  |
-| `title`            |                    |           | Title for card                                                                                                            |
-| `message`          |                    |           | Content of card                                                                                                           |
+| `title`            |                    |           | Title for card. If set to "GET_ACTION" will replace with the action taken and by whom (e.g PR #123 closed by Joe)                                                                                                            |
+| `message`          |                    |           | Content of cardIf set to "GET_ACTION" will replace with the action taken and by whom (e.g PR #123 closed by Joe)                                                                                                           |
 | `include_image`    |                    |  `true`  | If action is used in a pull request, attach the preview image for it to the card. Can be overridden by `custom_image_url` |
+| `show_author`    |                    |  `false`  | if action is a Pull request, whether to show the author in the card |
 | `colour`           |                    |           | Colour for the edge of the card in hex                                                                                    |
 | `username`         |                    | `GitHub`  | Username to send message as                                                                                               |
 | `avatar_url`       |                    |           | Avatar to use for user                                                                                                    |
@@ -40,6 +41,7 @@ jobs:
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
           include_image: true
+          message: "GET_ACTION"
           avatar_url: https://raw.githubusercontent.com/tgstation/TerraGov-Marine-Corps/refs/heads/master/icons/tgmc_64.png
           username: mpreg emoji test bot
           title_url: "${{ github.event.pull_request.html_url }}"
