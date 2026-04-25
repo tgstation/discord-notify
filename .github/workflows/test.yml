@@ -10,8 +10,10 @@ jobs:
          run: |
             npm install
             npm run all
+
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: actions/checkout@v6
       - name: discord notify all options
