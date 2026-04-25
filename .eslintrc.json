@@ -49,7 +49,7 @@
     },
     "env": {
       "node": true,
-      "es6": true,
+      "es2022": true,
       "jest/globals": true
     }
   }
