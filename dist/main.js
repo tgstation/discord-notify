@@ -3,6 +3,7 @@ import * as github from '@actions/github';
 import fetch from 'node-fetch';
 async function run() {
     try {
+        const a = 5;
         const webhookUrl = core.getInput('webhook_url', { required: true });
         const title = core.getInput('title');
         const message = core.getInput('message');
