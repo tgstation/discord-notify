@@ -27,7 +27,7 @@ type Body = {
   flags: number
 }
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
     const webhookUrl = core.getInput('webhook_url', {required: true})
     const title = core.getInput('title')
@@ -165,5 +165,3 @@ async function run(): Promise<void> {
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
-
-run()
