@@ -1,5 +1,10 @@
 name: 'build-test'
-on: [push, pull_request]
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
 
 jobs:
   build-test:
