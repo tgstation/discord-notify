@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v6
       - name: discord notify all options
         uses: ./ # Uses an action in the root directory
         with:
