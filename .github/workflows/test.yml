@@ -8,8 +8,7 @@ jobs:
        - uses: actions/checkout@v6
        - name: Install packages
          run: |
-            npm install
-            npm run all
+            npm install --all
 
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
