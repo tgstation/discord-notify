@@ -1,5 +1,6 @@
 name: 'build-test'
-on: [push]
+on: 
+  push
 
 jobs:
   build: # make sure build/ci work properly
