@@ -29,6 +29,7 @@ type Body = {
 
 async function run(): Promise<void> {
   try {
+    const a = 5;
     const webhookUrl = core.getInput('webhook_url', {required: true})
     const title = core.getInput('title')
     const message = core.getInput('message')
