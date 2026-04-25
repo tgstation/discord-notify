@@ -1,27 +1,22 @@
 name: 'build-test'
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build: # make sure build/ci work properly
+  build-test:
     runs-on: ubuntu-latest
     steps:
        - uses: actions/checkout@v6
        - name: Install packages
          run: |
             npm ci
-
-  test: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: discord notify all options
-        uses: ./ # Uses an action in the root directory
-        with:
-          webhook_url: https://http-echo-stegzilla.herokuapp.com
-          title: Test title
-          message: 'test message'
-          include_image: true
-          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          username: TestUsername
-          colour: '#3371FF'
-          #custom_image_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+       - name: discord notify all options
+         uses: ./ # Uses an action in the root directory
+         with:
+            webhook_url: https://http-echo-stegzilla.herokuapp.com
+            title: Test title
+            message: 'test message'
+            include_image: true
+            avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+            username: TestUsername
+            colour: '#3371FF'
+            #custom_image_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
