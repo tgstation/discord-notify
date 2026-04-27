@@ -1,4 +1,4 @@
-# Discord Notify Action A
+# Discord Notify Action
 
 This action sends a notification to Discord.
 
