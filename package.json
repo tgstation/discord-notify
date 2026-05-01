@@ -3,16 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "description": "TypeScript template action",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint",
     "build": "tsc",
-    "format": "prettier --write '**/*.ts'",
-    "format-check": "prettier --check '**/*.ts'",
-    "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package"
+    "package": "ncc build out/main.js --source-map -o dist --license licenses.txt",
+    "all": "npm run format && npm run format-check && npm run lint && npm run build && npm run package"
   },
   "repository": {
     "type": "git",
@@ -31,16 +30,15 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "^25.6.0",
-    "@typescript-eslint/parser": "^8.59.0",
-    "@vercel/ncc": "^0.38.4",
-    "eslint": "^9.39.4",
-    "eslint-plugin-github": "^6.0.0",
-    "eslint-plugin-jest": "^29.15.2",
-    "jest": "^30.3.0",
-    "js-yaml": "^4.1.1",
+    "@typescript-eslint/eslint-plugin": "^8.59.1",
+    "@typescript-eslint/parser": "^8.59.1",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
     "prettier": "^3.8.3",
-    "ts-jest": "^29.4.9",
     "typescript": "^6.0.3"
   }
 }
