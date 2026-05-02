@@ -31,8 +31,8 @@ jobs:
          uses: ./ # Uses an action in the root directory
          with:
             webhook_url: https://test.requestcatcher.com/ # https://requestcatcher.com/ best domain for testing
-            title: Test title
-            message: 'test message'
+            title: Test Title
+            message: 'Test Message'
             include_image: true
             avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
             username: TestUsername
