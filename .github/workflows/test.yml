@@ -20,9 +20,10 @@ jobs:
           # FIXME: This always produces diffs of little numbers, and I have no idea why.
        - name: Validate dist
          run: |
-              cp dist/index.js dist/index_pr.js
+              cp dist/index.js index_pr.js
+              rm -r dist
               npm run package
-              diff dist/index.js dist/index_pr.js
+              diff dist/index.js index_pr.js
               if [ $? -ne 0 ]; then
                 echo "Files differ!"
                 exit 1
