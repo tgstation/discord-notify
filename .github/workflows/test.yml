@@ -16,12 +16,12 @@ jobs:
                   npm ls
        - name: Validate dist
          run: |
-              cp dist/index.js index_pr.js
+              cp dist/main.js main_pr.js
               rm -r dist
               npm rollup npm install --global rollup
               npm run build
               npm run package
-              diff dist/index.js index_pr.js
+              diff dist/main.js main_pr.js
               if [ $? -ne 0 ]; then
                   echo "Files differ."
                   exit 0
