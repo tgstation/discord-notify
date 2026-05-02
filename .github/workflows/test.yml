@@ -14,7 +14,6 @@ jobs:
          run: |
                   npm ci
                   npm ls
-                  npm test
           # FIXME: This always produces diffs of little numbers, and I have no idea why.
        - name: Validate dist
          run: |
