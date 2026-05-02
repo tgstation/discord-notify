@@ -29,9 +29,9 @@ jobs:
        - name: discord notify all options
          uses: ./ # Uses an action in the root directory
          with:
-            webhook_url: https://tes.requestcatcher.com/ # https://requestcatcher.com/ best domain for testing
+            webhook_url: https://test.requestcatcher.com/ # https://requestcatcher.com/ best domain for testing
             title: Test Title
-            message: 'Test Message'
+            message: Test Message
             include_image: true
             avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
             username: TestUsername
