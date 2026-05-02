@@ -17,7 +17,7 @@ jobs:
                   npm run build
                   npm i -g @vercel/ncc
                   npm run package
-         # FIXME: This always produces diffs of little numbers, see https://github.com/vercel/ncc/issues/831#issuecomment-1594540905. When this gets fixed change the exit code to 1 to enfore checks again
+         # FIXME: This always produces diffs of little numbers, see https://github.com/vercel/ncc/issues/831#issuecomment-1594540905. This test passes with no problems here so idk
        - name: Validate dist
          run: |
               cp dist/index.js index_pr.js
