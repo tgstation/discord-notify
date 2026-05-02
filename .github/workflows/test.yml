@@ -12,8 +12,8 @@ jobs:
             node-version: 24.x
        - name: Install dependencies
          run: |
-                  npm ls
                   npm ci
+                  npm ls
           # FIXME: This always produces diffs of little numbers, and I have no idea why.
        - name: Validate dist
          run: |
