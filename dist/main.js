@@ -1,60 +1,40 @@
-'use strict';
-
-var os = require('os');
-require('crypto');
-var fs = require('fs');
-require('path');
-var http = require('http');
-var https = require('https');
-require('net');
-var require$$1 = require('tls');
-var events$1 = require('events');
-require('assert');
-var require$$6 = require('util');
-var require$$0$1 = require('node:assert');
-var require$$0$2 = require('node:net');
-var http$1 = require('node:http');
-var Stream = require('node:stream');
-var require$$0 = require('node:buffer');
-var require$$0$3 = require('node:util');
-var require$$7 = require('node:querystring');
-var require$$8 = require('node:events');
-var require$$0$4 = require('node:diagnostics_channel');
-var require$$5 = require('node:tls');
-var zlib = require('node:zlib');
-var require$$5$1 = require('node:perf_hooks');
-var require$$8$1 = require('node:util/types');
-var require$$1$1 = require('node:worker_threads');
-var require$$1$2 = require('node:url');
-var require$$5$2 = require('node:async_hooks');
-var require$$1$3 = require('node:console');
-var require$$1$4 = require('node:dns');
-var require$$5$3 = require('string_decoder');
-require('child_process');
-require('timers');
-var https$1 = require('node:https');
-var node_fs = require('node:fs');
-require('node:path');
-
-function _interopNamespaceDefault(e) {
-    var n = Object.create(null);
-    if (e) {
-        Object.keys(e).forEach(function (k) {
-            if (k !== 'default') {
-                var d = Object.getOwnPropertyDescriptor(e, k);
-                Object.defineProperty(n, k, d.get ? d : {
-                    enumerable: true,
-                    get: function () { return e[k]; }
-                });
-            }
-        });
-    }
-    n.default = e;
-    return Object.freeze(n);
-}
-
-var os__namespace = /*#__PURE__*/_interopNamespaceDefault(os);
-var fs__namespace = /*#__PURE__*/_interopNamespaceDefault(fs);
+import * as os from 'os';
+import os__default, { EOL } from 'os';
+import 'crypto';
+import * as fs from 'fs';
+import { promises, existsSync, readFileSync } from 'fs';
+import 'path';
+import http from 'http';
+import https from 'https';
+import 'net';
+import require$$1 from 'tls';
+import events$1 from 'events';
+import 'assert';
+import require$$6 from 'util';
+import require$$0$1 from 'node:assert';
+import require$$0$2, { isIP } from 'node:net';
+import http$1 from 'node:http';
+import Stream, { PassThrough, pipeline as pipeline$1 } from 'node:stream';
+import require$$0, { Buffer as Buffer$1 } from 'node:buffer';
+import require$$0$3, { types, deprecate, promisify } from 'node:util';
+import require$$7 from 'node:querystring';
+import require$$8 from 'node:events';
+import require$$0$4 from 'node:diagnostics_channel';
+import require$$5 from 'node:tls';
+import zlib from 'node:zlib';
+import require$$5$1 from 'node:perf_hooks';
+import require$$8$1 from 'node:util/types';
+import require$$1$1 from 'node:worker_threads';
+import require$$1$2, { format } from 'node:url';
+import require$$5$2 from 'node:async_hooks';
+import require$$1$3 from 'node:console';
+import require$$1$4 from 'node:dns';
+import require$$5$3 from 'string_decoder';
+import 'child_process';
+import 'timers';
+import https$1 from 'node:https';
+import { promises as promises$1 } from 'node:fs';
+import 'node:path';
 
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -126,7 +106,7 @@ function toCommandProperties(annotationProperties) {
  */
 function issueCommand(command, properties, message) {
     const cmd = new Command(command, properties, message);
-    process.stdout.write(cmd.toString() + os__namespace.EOL);
+    process.stdout.write(cmd.toString() + os.EOL);
 }
 const CMD_STRING = '::';
 class Command {
@@ -28008,7 +27988,7 @@ var MediaTypes;
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { access, appendFile, writeFile } = fs.promises;
+const { access, appendFile, writeFile } = promises;
 
 (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -28019,10 +27999,10 @@ const { access, appendFile, writeFile } = fs.promises;
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { chmod, copyFile, lstat, mkdir, open, readdir, rename, rm, rmdir, stat: stat$1, symlink, unlink } = fs__namespace.promises;
+const { chmod, copyFile, lstat, mkdir, open, readdir, rename, rm, rmdir, stat: stat$1, symlink, unlink } = fs.promises;
 // export const {open} = 'fs'
 process.platform === 'win32';
-fs__namespace.constants.O_RDONLY;
+fs.constants.O_RDONLY;
 
 (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -28065,8 +28045,8 @@ process.platform === 'win32';
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-os.platform();
-os.arch();
+os__default.platform();
+os__default.arch();
 
 (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -28167,12 +28147,12 @@ class Context {
         var _a, _b, _c;
         this.payload = {};
         if (process.env.GITHUB_EVENT_PATH) {
-            if (fs.existsSync(process.env.GITHUB_EVENT_PATH)) {
-                this.payload = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: 'utf8' }));
+            if (existsSync(process.env.GITHUB_EVENT_PATH)) {
+                this.payload = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: 'utf8' }));
             }
             else {
                 const path = process.env.GITHUB_EVENT_PATH;
-                process.stdout.write(`GITHUB_EVENT_PATH ${path} does not exist${os.EOL}`);
+                process.stdout.write(`GITHUB_EVENT_PATH ${path} does not exist${EOL}`);
             }
         }
         this.eventName = process.env.GITHUB_EVENT_NAME;
@@ -38379,7 +38359,7 @@ const isSameProtocol = (destination, original) => {
 	return orig === dest;
 };
 
-const pipeline = require$$0$3.promisify(Stream.pipeline);
+const pipeline = promisify(Stream.pipeline);
 const INTERNALS$2 = Symbol('Body internals');
 
 /**
@@ -38402,13 +38382,13 @@ class Body {
 			body = null;
 		} else if (isURLSearchParameters(body)) {
 			// Body is a URLSearchParams
-			body = require$$0.Buffer.from(body.toString());
-		} else if (isBlob(body)) ; else if (require$$0.Buffer.isBuffer(body)) ; else if (require$$0$3.types.isAnyArrayBuffer(body)) {
+			body = Buffer$1.from(body.toString());
+		} else if (isBlob(body)) ; else if (Buffer$1.isBuffer(body)) ; else if (types.isAnyArrayBuffer(body)) {
 			// Body is ArrayBuffer
-			body = require$$0.Buffer.from(body);
+			body = Buffer$1.from(body);
 		} else if (ArrayBuffer.isView(body)) {
 			// Body is ArrayBufferView
-			body = require$$0.Buffer.from(body.buffer, body.byteOffset, body.byteLength);
+			body = Buffer$1.from(body.buffer, body.byteOffset, body.byteLength);
 		} else if (body instanceof Stream) ; else if (body instanceof FormData) {
 			// Body is FormData
 			body = formDataToBlob(body);
@@ -38416,12 +38396,12 @@ class Body {
 		} else {
 			// None of the above
 			// coerce to string then buffer
-			body = require$$0.Buffer.from(String(body));
+			body = Buffer$1.from(String(body));
 		}
 
 		let stream = body;
 
-		if (require$$0.Buffer.isBuffer(body)) {
+		if (Buffer$1.isBuffer(body)) {
 			stream = Stream.Readable.from(body);
 		} else if (isBlob(body)) {
 			stream = Stream.Readable.from(body.stream());
@@ -38478,7 +38458,7 @@ class Body {
 			return formData;
 		}
 
-		const {toFormData} = await Promise.resolve().then(function () { return require('./multipart-parser-BNO5ztB5.js'); });
+		const {toFormData} = await import('./multipart-parser-BkKybxoG.js');
 		return toFormData(this.body, ct);
 	}
 
@@ -38526,7 +38506,7 @@ class Body {
 	}
 }
 
-Body.prototype.buffer = require$$0$3.deprecate(Body.prototype.buffer, 'Please use \'response.arrayBuffer()\' instead of \'response.buffer()\'', 'node-fetch#buffer');
+Body.prototype.buffer = deprecate(Body.prototype.buffer, 'Please use \'response.arrayBuffer()\' instead of \'response.buffer()\'', 'node-fetch#buffer');
 
 // In browsers, all properties are enumerable.
 Object.defineProperties(Body.prototype, {
@@ -38536,7 +38516,7 @@ Object.defineProperties(Body.prototype, {
 	blob: {enumerable: true},
 	json: {enumerable: true},
 	text: {enumerable: true},
-	data: {get: require$$0$3.deprecate(() => {},
+	data: {get: deprecate(() => {},
 		'data doesn\'t exist, use json(), text(), arrayBuffer(), or body instead',
 		'https://github.com/node-fetch/node-fetch/issues/1000 (response)')}
 });
@@ -38563,12 +38543,12 @@ async function consumeBody(data) {
 
 	// Body is null
 	if (body === null) {
-		return require$$0.Buffer.alloc(0);
+		return Buffer$1.alloc(0);
 	}
 
 	/* c8 ignore next 3 */
 	if (!(body instanceof Stream)) {
-		return require$$0.Buffer.alloc(0);
+		return Buffer$1.alloc(0);
 	}
 
 	// Body is stream
@@ -38595,10 +38575,10 @@ async function consumeBody(data) {
 	if (body.readableEnded === true || body._readableState.ended === true) {
 		try {
 			if (accum.every(c => typeof c === 'string')) {
-				return require$$0.Buffer.from(accum.join(''));
+				return Buffer$1.from(accum.join(''));
 			}
 
-			return require$$0.Buffer.concat(accum, accumBytes);
+			return Buffer$1.concat(accum, accumBytes);
 		} catch (error) {
 			throw new FetchError(`Could not create Buffer from response body for ${data.url}: ${error.message}`, 'system', error);
 		}
@@ -38628,8 +38608,8 @@ const clone = (instance, highWaterMark) => {
 	// note: we can't clone the form-data object without having it as a dependency
 	if ((body instanceof Stream) && (typeof body.getBoundary !== 'function')) {
 		// Tee instance body
-		p1 = new Stream.PassThrough({highWaterMark});
-		p2 = new Stream.PassThrough({highWaterMark});
+		p1 = new PassThrough({highWaterMark});
+		p2 = new PassThrough({highWaterMark});
 		body.pipe(p1);
 		body.pipe(p2);
 		// Set instance body to teed body and return the other teed body
@@ -38640,7 +38620,7 @@ const clone = (instance, highWaterMark) => {
 	return body;
 };
 
-const getNonSpecFormDataBoundary = require$$0$3.deprecate(
+const getNonSpecFormDataBoundary = deprecate(
 	body => body.getBoundary(),
 	'form-data doesn\'t follow the spec and requires special treatment. Use alternative package',
 	'https://github.com/node-fetch/node-fetch/issues/1167'
@@ -38678,7 +38658,7 @@ const extractContentType = (body, request) => {
 	}
 
 	// Body is a Buffer (Buffer, ArrayBuffer or ArrayBufferView)
-	if (require$$0.Buffer.isBuffer(body) || require$$0$3.types.isAnyArrayBuffer(body) || ArrayBuffer.isView(body)) {
+	if (Buffer$1.isBuffer(body) || types.isAnyArrayBuffer(body) || ArrayBuffer.isView(body)) {
 		return null;
 	}
 
@@ -38723,7 +38703,7 @@ const getTotalBytes = request => {
 	}
 
 	// Body is Buffer
-	if (require$$0.Buffer.isBuffer(body)) {
+	if (Buffer$1.isBuffer(body)) {
 		return body.length;
 	}
 
@@ -38810,7 +38790,7 @@ class Headers extends URLSearchParams {
 			for (const [name, values] of Object.entries(raw)) {
 				result.push(...values.map(value => [name, value]));
 			}
-		} else if (init == null) ; else if (typeof init === 'object' && !require$$0$3.types.isBoxedPrimitive(init)) {
+		} else if (init == null) ; else if (typeof init === 'object' && !types.isBoxedPrimitive(init)) {
 			const method = init[Symbol.iterator];
 			// eslint-disable-next-line no-eq-null, eqeqeq
 			if (method == null) {
@@ -38826,7 +38806,7 @@ class Headers extends URLSearchParams {
 				result = [...init]
 					.map(pair => {
 						if (
-							typeof pair !== 'object' || require$$0$3.types.isBoxedPrimitive(pair)
+							typeof pair !== 'object' || types.isBoxedPrimitive(pair)
 						) {
 							throw new TypeError('Each header pair must be an iterable object');
 						}
@@ -39303,7 +39283,7 @@ function isOriginPotentiallyTrustworthy(url) {
 
 	// 4. If origin's host component matches one of the CIDR notations 127.0.0.0/8 or ::1/128 [RFC4632], return "Potentially Trustworthy".
 	const hostIp = url.host.replace(/(^\[)|(]$)/g, '');
-	const hostIPVersion = require$$0$2.isIP(hostIp);
+	const hostIPVersion = isIP(hostIp);
 
 	if (hostIPVersion === 4 && /^127\./.test(hostIp)) {
 		return true;
@@ -39560,7 +39540,7 @@ const isRequest = object => {
 	);
 };
 
-const doBadDataWarn = require$$0$3.deprecate(() => {},
+const doBadDataWarn = deprecate(() => {},
 	'.data is not a valid RequestInit property, use .body instead',
 	'https://github.com/node-fetch/node-fetch/issues/1000 (request)');
 
@@ -39679,7 +39659,7 @@ class Request extends Body {
 
 	/** @returns {string} */
 	get url() {
-		return require$$1$2.format(this[INTERNALS].parsedURL);
+		return format(this[INTERNALS].parsedURL);
 	}
 
 	/** @returns {Headers} */
@@ -39877,7 +39857,7 @@ function requireNodeDomexception () {
 
 requireNodeDomexception();
 
-const { stat } = node_fs.promises;
+const { stat } = promises$1;
 
 /**
  * Index.js
@@ -40102,7 +40082,7 @@ async function fetch(url, options_) {
 				});
 			}
 
-			let body = Stream.pipeline(response_, new Stream.PassThrough(), error => {
+			let body = pipeline$1(response_, new PassThrough(), error => {
 				if (error) {
 					reject(error);
 				}
@@ -40152,7 +40132,7 @@ async function fetch(url, options_) {
 
 			// For gzip
 			if (codings === 'gzip' || codings === 'x-gzip') {
-				body = Stream.pipeline(body, zlib.createGunzip(zlibOptions), error => {
+				body = pipeline$1(body, zlib.createGunzip(zlibOptions), error => {
 					if (error) {
 						reject(error);
 					}
@@ -40166,7 +40146,7 @@ async function fetch(url, options_) {
 			if (codings === 'deflate' || codings === 'x-deflate') {
 				// Handle the infamous raw deflate response from old servers
 				// a hack for old IIS and Apache servers
-				const raw = Stream.pipeline(response_, new Stream.PassThrough(), error => {
+				const raw = pipeline$1(response_, new PassThrough(), error => {
 					if (error) {
 						reject(error);
 					}
@@ -40174,13 +40154,13 @@ async function fetch(url, options_) {
 				raw.once('data', chunk => {
 					// See http://stackoverflow.com/questions/37519828
 					if ((chunk[0] & 0x0F) === 0x08) {
-						body = Stream.pipeline(body, zlib.createInflate(), error => {
+						body = pipeline$1(body, zlib.createInflate(), error => {
 							if (error) {
 								reject(error);
 							}
 						});
 					} else {
-						body = Stream.pipeline(body, zlib.createInflateRaw(), error => {
+						body = pipeline$1(body, zlib.createInflateRaw(), error => {
 							if (error) {
 								reject(error);
 							}
@@ -40203,7 +40183,7 @@ async function fetch(url, options_) {
 
 			// For br
 			if (codings === 'br') {
-				body = Stream.pipeline(body, zlib.createBrotliDecompress(), error => {
+				body = pipeline$1(body, zlib.createBrotliDecompress(), error => {
 					if (error) {
 						reject(error);
 					}
@@ -40224,7 +40204,7 @@ async function fetch(url, options_) {
 }
 
 function fixResponseChunkedTransferBadEnding(request, errorCallback) {
-	const LAST_CHUNK = require$$0.Buffer.from('0\r\n\r\n');
+	const LAST_CHUNK = Buffer$1.from('0\r\n\r\n');
 
 	let isChunkedTransfer = false;
 	let properLastChunkReceived = false;
@@ -40245,13 +40225,13 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 		};
 
 		const onData = buf => {
-			properLastChunkReceived = require$$0.Buffer.compare(buf.slice(-5), LAST_CHUNK) === 0;
+			properLastChunkReceived = Buffer$1.compare(buf.slice(-5), LAST_CHUNK) === 0;
 
 			// Sometimes final 0-length chunk and end of message code are in separate packets
 			if (!properLastChunkReceived && previousChunk) {
 				properLastChunkReceived = (
-					require$$0.Buffer.compare(previousChunk.slice(-3), LAST_CHUNK.slice(0, 3)) === 0 &&
-					require$$0.Buffer.compare(buf.slice(-2), LAST_CHUNK.slice(3)) === 0
+					Buffer$1.compare(previousChunk.slice(-3), LAST_CHUNK.slice(0, 3)) === 0 &&
+					Buffer$1.compare(buf.slice(-2), LAST_CHUNK.slice(3)) === 0
 				);
 			}
 
@@ -40399,6 +40379,5 @@ async function run() {
 }
 run();
 
-exports.File = File;
-exports.FormData = FormData;
+export { FormData as F, File as a };
 //# sourceMappingURL=main.js.map

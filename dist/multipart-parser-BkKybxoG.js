@@ -1,41 +1,39 @@
-'use strict';
-
-var main = require('./main.js');
-require('os');
-require('crypto');
-require('fs');
-require('path');
-require('http');
-require('https');
-require('net');
-require('tls');
-require('events');
-require('assert');
-require('util');
-require('node:assert');
-require('node:net');
-require('node:http');
-require('node:stream');
-require('node:buffer');
-require('node:util');
-require('node:querystring');
-require('node:events');
-require('node:diagnostics_channel');
-require('node:tls');
-require('node:zlib');
-require('node:perf_hooks');
-require('node:util/types');
-require('node:worker_threads');
-require('node:url');
-require('node:async_hooks');
-require('node:console');
-require('node:dns');
-require('string_decoder');
-require('child_process');
-require('timers');
-require('node:https');
-require('node:fs');
-require('node:path');
+import { F as FormData, a as File } from './main.js';
+import 'os';
+import 'crypto';
+import 'fs';
+import 'path';
+import 'http';
+import 'https';
+import 'net';
+import 'tls';
+import 'events';
+import 'assert';
+import 'util';
+import 'node:assert';
+import 'node:net';
+import 'node:http';
+import 'node:stream';
+import 'node:buffer';
+import 'node:util';
+import 'node:querystring';
+import 'node:events';
+import 'node:diagnostics_channel';
+import 'node:tls';
+import 'node:zlib';
+import 'node:perf_hooks';
+import 'node:util/types';
+import 'node:worker_threads';
+import 'node:url';
+import 'node:async_hooks';
+import 'node:console';
+import 'node:dns';
+import 'string_decoder';
+import 'child_process';
+import 'timers';
+import 'node:https';
+import 'node:fs';
+import 'node:path';
 
 let s = 0;
 const S = {
@@ -389,7 +387,7 @@ async function toFormData(Body, ct) {
 	let contentType;
 	let filename;
 	const entryChunks = [];
-	const formData = new main.FormData();
+	const formData = new FormData();
 
 	const onPartData = ui8a => {
 		entryValue += decoder.decode(ui8a, {stream: true});
@@ -400,7 +398,7 @@ async function toFormData(Body, ct) {
 	};
 
 	const appendFileToFormData = () => {
-		const file = new main.File(entryChunks, filename, {type: contentType});
+		const file = new File(entryChunks, filename, {type: contentType});
 		formData.append(entryName, file);
 	};
 
@@ -467,5 +465,5 @@ async function toFormData(Body, ct) {
 	return formData;
 }
 
-exports.toFormData = toFormData;
-//# sourceMappingURL=multipart-parser-BNO5ztB5.js.map
+export { toFormData };
+//# sourceMappingURL=multipart-parser-BkKybxoG.js.map
