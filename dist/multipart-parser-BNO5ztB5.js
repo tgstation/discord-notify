@@ -1,17 +1,41 @@
-export const id = 459;
-export const ids = [459];
-export const modules = {
+'use strict';
 
-/***/ 8459:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   toFormData: () => (/* binding */ toFormData)
-/* harmony export */ });
-/* harmony import */ var fetch_blob_from_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1735);
-/* harmony import */ var formdata_polyfill_esm_min_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5816);
-
-
+var main = require('./main.js');
+require('os');
+require('crypto');
+require('fs');
+require('path');
+require('http');
+require('https');
+require('net');
+require('tls');
+require('events');
+require('assert');
+require('util');
+require('node:assert');
+require('node:net');
+require('node:http');
+require('node:stream');
+require('node:buffer');
+require('node:util');
+require('node:querystring');
+require('node:events');
+require('node:diagnostics_channel');
+require('node:tls');
+require('node:zlib');
+require('node:perf_hooks');
+require('node:util/types');
+require('node:worker_threads');
+require('node:url');
+require('node:async_hooks');
+require('node:console');
+require('node:dns');
+require('string_decoder');
+require('child_process');
+require('timers');
+require('node:https');
+require('node:fs');
+require('node:path');
 
 let s = 0;
 const S = {
@@ -365,7 +389,7 @@ async function toFormData(Body, ct) {
 	let contentType;
 	let filename;
 	const entryChunks = [];
-	const formData = new formdata_polyfill_esm_min_js__WEBPACK_IMPORTED_MODULE_1__/* .FormData */ .fS();
+	const formData = new main.FormData();
 
 	const onPartData = ui8a => {
 		entryValue += decoder.decode(ui8a, {stream: true});
@@ -376,7 +400,7 @@ async function toFormData(Body, ct) {
 	};
 
 	const appendFileToFormData = () => {
-		const file = new fetch_blob_from_js__WEBPACK_IMPORTED_MODULE_0__/* .File */ .ZH(entryChunks, filename, {type: contentType});
+		const file = new main.File(entryChunks, filename, {type: contentType});
 		formData.append(entryName, file);
 	};
 
@@ -443,7 +467,5 @@ async function toFormData(Body, ct) {
 	return formData;
 }
 
-
-/***/ })
-
-};
+exports.toFormData = toFormData;
+//# sourceMappingURL=multipart-parser-BNO5ztB5.js.map
