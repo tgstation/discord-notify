@@ -6,6 +6,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
        - uses: actions/checkout@v6
+       - name: Setup node
+         uses: actions/setup-node@v6
+         with:
+            node-version: 24.x
+       - name: Install dependencies
+         run: |
+                  npm ci
+                  npm ls
+                  npm test
+          # FIXME: This always produces diffs of little numbers, and I have no idea why.
+       - name: Validate dist
+         run: |
+              npm i -g @vercel/ncc
+              ncc build src/main.ts -o dist
+              cp dist/index.js dist/index_pr.js
+              ncc build src/main.ts -o dist
+              diff dist/index.js dist/index_pr.js
+              if [ $? -ne 0 ]; then
+                echo "Files differ!"
+                exit 1
+              fi
        - name: discord notify all options
          uses: ./ # Uses an action in the root directory
          with:
