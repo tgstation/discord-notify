@@ -18,7 +18,7 @@ jobs:
          run: |
               cp dist/main.js main_pr.js
               rm -r dist
-              npm rollup npm install --global rollup
+              npm install --global rollup
               npm run build
               npm run package
               diff dist/main.js main_pr.js
