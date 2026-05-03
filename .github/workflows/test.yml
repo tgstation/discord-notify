@@ -24,7 +24,7 @@ jobs:
               diff dist/main.js main_pr.js
               if [ $? -ne 0 ]; then
                   echo "Files differ."
-                  exit 0
+                  exit 1
               fi
        - name: discord notify all options
          uses: ./ # Uses an action in the root directory
