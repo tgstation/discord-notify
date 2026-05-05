@@ -40267,7 +40267,8 @@ async function run() {
             const prNumber = context.payload.pull_request?.number; // PRs # number
             const prUser = context.payload.pull_request?.user.login; // PR creator
             const actionUser = context.actor; // The user who performed the action
-            const prMergedBy = context.payload.pull_request?.merged_by?.login || 'Unknown';
+            const prMergedBy = context.payload.pull_request?.merged_by?.login ||
+                'Unknown';
             if (context.payload.action === 'opened') {
                 embed.title = `**Pull Request #${prNumber} Opened by ${prUser}**`;
             }
@@ -40292,7 +40293,8 @@ async function run() {
             const prNumber = context.payload.pull_request?.number; // PRs # number
             const prUser = context.payload.pull_request?.user.login; // PR creator
             const actionUser = context.actor; // The user who performed the action
-            const prMergedBy = context.payload.pull_request?.merged_by?.login || 'Unknown';
+            const prMergedBy = context.payload.pull_request?.merged_by?.login ||
+                'Unknown';
             if (context.payload.action === 'opened') {
                 embed.description = `**Pull Request #${prNumber} Opened by ${prUser}**`;
             }
