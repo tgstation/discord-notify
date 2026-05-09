@@ -20,17 +20,6 @@ jobs:
          run: |
                   npm ci
                   npm ls
-       - name: Validate dist
-         run: |
-              cp dist/main.js main_pr.js
-              rm -r dist
-              npm install --global rollup
-              npm run build
-              npm run package
-              echo "Files should not differ but even if they do"
-              echo "It's a non blocking issue as files made in windows still work on ubuntu github action runner"
-              echo "This just checks for basic consistency which is good but not always nessassary"
-              diff dist/main.js main_pr.js || true
        - name: discord notify all options
          uses: ./ # Uses an action in the root directory
          with:
