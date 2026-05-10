@@ -30,4 +30,11 @@ jobs:
             avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
             username: TestUsername
             colour: '#3371FF'
-            #custom_image_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+       - name: Validate dist
+         run: |
+              npm i -g rollup
+              cp dist/main.js index_pr.js
+              rm -rf out dist
+              npm run build
+              npm run package
+              diff dist/main.js index_pr.js
