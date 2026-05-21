@@ -40261,68 +40261,56 @@ async function run() {
         const custom_image_url = getInput('custom_image_url');
         const title_url = getInput('title_url');
         const embed = {
+            title: title,
             description: message
         };
-        if (title === 'GET_ACTION') {
-            const prNumber = context.payload.pull_request?.number; // PRs # number
-            const prUser = context.payload.pull_request?.user.login; // PR creator
-            const actionUser = context.actor; // The user who performed the action
-            const prMergedBy = context.payload.pull_request?.merged_by?.login ||
-                'Unknown';
-            if (context.payload.action === 'opened') {
-                embed.title = `**Pull Request #${prNumber} Opened by ${prUser}**`;
+        const action = context.payload.action;
+        if (title === 'GET_ACTION' || message === 'GET_ACTION') {
+            let user = 'Unknown';
+            let type = 'Unknown';
+            if (context.payload.pull_request) {
+                user = context.payload.pull_request.user.login;
+                type = 'Pull Request';
+                if (context.payload.pull_request.merged) {
+                    user = context.payload.pull_request.merged_by.login;
+                }
             }
-            else if (context.payload.action === 'reopened') {
-                embed.title = `**Pull Request #${prNumber} Reopened by ${actionUser}**`;
+            else if (context.payload.issue) {
+                user = context.payload.issue.user.login;
+                type = 'Issue';
             }
-            else if (context.payload.action === 'closed' &&
-                context.payload.pull_request?.merged) {
-                embed.title = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`;
+            if (action == 'closed' || action == 'reopened') {
+                user = context.actor;
             }
-            else if (context.payload.action === 'closed') {
-                embed.title = `**Pull Request #${prNumber} Closed by ${actionUser}**`;
+            let payload = `**${type} #${context.issue.number}`;
+            switch (action) {
+                case 'opened':
+                    payload += ' Opened by';
+                    break;
+                case 'closed':
+                    payload += ' Closed by';
+                    break;
+                case 'reopened':
+                    payload += ' Reopened by';
             }
-            else {
-                embed.title = `**Pull Request #${prNumber} Event**`; // Fallback for unknown actions
+            if (context.payload.pull_request?.merged) {
+                payload += ' Merged by';
             }
-        }
-        else {
-            embed.title = title;
-        }
-        if (message === 'GET_ACTION') {
-            const prNumber = context.payload.pull_request?.number; // PRs # number
-            const prUser = context.payload.pull_request?.user.login; // PR creator
-            const actionUser = context.actor; // The user who performed the action
-            const prMergedBy = context.payload.pull_request?.merged_by?.login ||
-                'Unknown';
-            if (context.payload.action === 'opened') {
-                embed.description = `**Pull Request #${prNumber} Opened by ${prUser}**`;
+            payload += ` ${user}`;
+            if (title == 'GET_ACTION') {
+                embed.title = payload;
             }
-            else if (context.payload.action === 'reopened') {
-                embed.description = `**Pull Request #${prNumber} Reopened by ${actionUser}**`;
+            if (message === 'GET_ACTION') {
+                embed.description = payload;
             }
-            else if (context.payload.action === 'closed' &&
-                context.payload.pull_request?.merged) {
-                embed.description = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`;
-            }
-            else if (context.payload.action === 'closed') {
-                embed.description = `**Pull Request #${prNumber} Closed by ${actionUser}**`;
-            }
-            else {
-                embed.description = `**Pull Request #${prNumber} Event**`; // Fallback for unknown actions
-            }
-        }
-        else {
-            embed.description = message;
         }
         if (colour !== '') {
             embed.color = parseInt(colour.replace('#', ''), 16);
         }
-        else if (context.payload.action === 'opened' ||
-            context.payload.action === 'reopened') {
+        else if (action === 'opened' || action === 'reopened') {
             embed.color = parseInt('#6cc644'.replace('#', ''), 16); // open or reopen. Github mantis color
         }
-        else if (context.payload.action === 'closed' &&
+        else if (action === 'closed' &&
             context.payload.pull_request?.merged) {
             embed.color = parseInt('#6e5494'.replace('#', ''), 16); // merged. github butterfly bush color
         }
@@ -40336,16 +40324,20 @@ async function run() {
                     icon_url: context.payload.pull_request.user.avatar_url
                 };
             }
+            else if (context.payload.issue) {
+                embed.author = {
+                    name: context.payload.issue.user.login,
+                    icon_url: context.payload.issue.user.avatar_url
+                };
+            }
         }
         if (title_url !== '') {
             embed.url = title_url;
         }
         if (include_image) {
-            if (context.payload.pull_request) {
-                embed.image = {
-                    url: `https://opengraph.githubassets.com/${context.sha}/${context.repo.owner}/${context.repo.repo}/pull/${context.payload.pull_request.number}`
-                };
-            }
+            embed.image = {
+                url: `https://opengraph.githubassets.com/${context.sha}/${context.repo.owner}/${context.repo.repo}/pull/${context.issue.number}`
+            };
             if (custom_image_url !== '') {
                 embed.image = {
                     url: custom_image_url
@@ -40362,14 +40354,15 @@ async function run() {
         if (username !== '') {
             body.username = username;
         }
-        debug(JSON.stringify(body));
+        const payload = JSON.stringify(body);
+        debug(payload);
         const webhookUrls = webhookUrl
             .split(',')
             .map((url) => url.trim());
         for (const url of webhookUrls) {
             await fetch(url, {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: payload,
                 headers: { 'Content-Type': 'application/json' }
             });
         }

@@ -41,70 +41,57 @@ async function run(): Promise<void> {
         const title_url = core.getInput('title_url')
 
         const embed: Embed = {
+            title: title,
             description: message
         }
 
-        if (title === 'GET_ACTION') {
-            const prNumber = github.context.payload.pull_request?.number // PRs # number
-            const prUser = github.context.payload.pull_request?.user.login // PR creator
-            const actionUser = github.context.actor // The user who performed the action
-            const prMergedBy =
-                github.context.payload.pull_request?.merged_by?.login ||
-                'Unknown'
-
-            if (github.context.payload.action === 'opened') {
-                embed.title = `**Pull Request #${prNumber} Opened by ${prUser}**`
-            } else if (github.context.payload.action === 'reopened') {
-                embed.title = `**Pull Request #${prNumber} Reopened by ${actionUser}**`
-            } else if (
-                github.context.payload.action === 'closed' &&
-                github.context.payload.pull_request?.merged
-            ) {
-                embed.title = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`
-            } else if (github.context.payload.action === 'closed') {
-                embed.title = `**Pull Request #${prNumber} Closed by ${actionUser}**`
-            } else {
-                embed.title = `**Pull Request #${prNumber} Event**` // Fallback for unknown actions
+        const action = github.context.payload.action
+        if (title === 'GET_ACTION' || message === 'GET_ACTION') {
+            let user = 'Unknown'
+            let type = 'Unknown'
+            if (github.context.payload.pull_request) {
+                user = github.context.payload.pull_request.user.login
+                type = 'Pull Request'
+                if (github.context.payload.pull_request.merged) {
+                    user = github.context.payload.pull_request.merged_by.login
+                }
+            } else if (github.context.payload.issue) {
+                user = github.context.payload.issue.user.login
+                type = 'Issue'
             }
-        } else {
-            embed.title = title
-        }
-
-        if (message === 'GET_ACTION') {
-            const prNumber = github.context.payload.pull_request?.number // PRs # number
-            const prUser = github.context.payload.pull_request?.user.login // PR creator
-            const actionUser = github.context.actor // The user who performed the action
-            const prMergedBy =
-                github.context.payload.pull_request?.merged_by?.login ||
-                'Unknown'
-
-            if (github.context.payload.action === 'opened') {
-                embed.description = `**Pull Request #${prNumber} Opened by ${prUser}**`
-            } else if (github.context.payload.action === 'reopened') {
-                embed.description = `**Pull Request #${prNumber} Reopened by ${actionUser}**`
-            } else if (
-                github.context.payload.action === 'closed' &&
-                github.context.payload.pull_request?.merged
-            ) {
-                embed.description = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`
-            } else if (github.context.payload.action === 'closed') {
-                embed.description = `**Pull Request #${prNumber} Closed by ${actionUser}**`
-            } else {
-                embed.description = `**Pull Request #${prNumber} Event**` // Fallback for unknown actions
+            if (action == 'closed' || action == 'reopened') {
+                user = github.context.actor
             }
-        } else {
-            embed.description = message
+
+            let payload = `**${type} #${github.context.issue.number}`
+            switch (action) {
+                case 'opened':
+                    payload += ' Opened by'
+                    break
+                case 'closed':
+                    payload += ' Closed by'
+                    break
+                case 'reopened':
+                    payload += ' Reopened by'
+            }
+            if (github.context.payload.pull_request?.merged) {
+                payload += ' Merged by'
+            }
+            payload += ` ${user}`
+            if (title == 'GET_ACTION') {
+                embed.title = payload
+            }
+            if (message === 'GET_ACTION') {
+                embed.description = payload
+            }
         }
 
         if (colour !== '') {
             embed.color = parseInt(colour.replace('#', ''), 16)
-        } else if (
-            github.context.payload.action === 'opened' ||
-            github.context.payload.action === 'reopened'
-        ) {
+        } else if (action === 'opened' || action === 'reopened') {
             embed.color = parseInt('#6cc644'.replace('#', ''), 16) // open or reopen. Github mantis color
         } else if (
-            github.context.payload.action === 'closed' &&
+            action === 'closed' &&
             github.context.payload.pull_request?.merged
         ) {
             embed.color = parseInt('#6e5494'.replace('#', ''), 16) // merged. github butterfly bush color
@@ -119,6 +106,11 @@ async function run(): Promise<void> {
                     icon_url:
                         github.context.payload.pull_request.user.avatar_url
                 }
+            } else if (github.context.payload.issue) {
+                embed.author = {
+                    name: github.context.payload.issue.user.login,
+                    icon_url: github.context.payload.issue.user.avatar_url
+                }
             }
         }
 
@@ -127,10 +119,8 @@ async function run(): Promise<void> {
         }
 
         if (include_image) {
-            if (github.context.payload.pull_request) {
-                embed.image = {
-                    url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${github.context.payload.pull_request.number}`
-                }
+            embed.image = {
+                url: `https://opengraph.githubassets.com/${github.context.sha}/${github.context.repo.owner}/${github.context.repo.repo}/pull/${github.context.issue.number}`
             }
             if (custom_image_url !== '') {
                 embed.image = {
@@ -151,8 +141,9 @@ async function run(): Promise<void> {
         if (username !== '') {
             body.username = username
         }
+        const payload = JSON.stringify(body)
 
-        core.debug(JSON.stringify(body))
+        core.debug(payload)
 
         const webhookUrls: string[] = webhookUrl
             .split(',')
@@ -160,7 +151,7 @@ async function run(): Promise<void> {
         for (const url of webhookUrls) {
             await fetch(url, {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: payload,
                 headers: {'Content-Type': 'application/json'}
             })
         }

@@ -1,0 +1,21 @@
+name: Announce Issue on Discord
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened, closed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-24.04
+    steps:
+        - uses: actions/checkout@v6
+        - name: Test
+          uses: ./
+          with:
+            webhook_url: https://discord-notify-tg-station.requestcatcher.com/
+            title: GET_ACTION
+            message: GET_ACTION
+            include_image: true
+            avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
