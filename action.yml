@@ -38,7 +38,7 @@ inputs:
     required: false
     default: ''
   title_url:
-    description: 'Make the title of the card a link. Sets it to this string.'
+    description: 'Make the title of the card a link. Will default to pull request or issue url if empty.'
     required: false
     default: ''
 

@@ -69,13 +69,15 @@ async function run(): Promise<void> {
                     payload += ' Opened by'
                     break
                 case 'closed':
-                    payload += ' Closed by'
+                    if (github.context.payload.pull_request?.merged) {
+                        payload += ' Merged by'
+                    } else {
+                        payload += ' Closed by'
+                    }
+
                     break
                 case 'reopened':
                     payload += ' Reopened by'
-            }
-            if (github.context.payload.pull_request?.merged) {
-                payload += ' Merged by'
             }
             payload += ` ${user}`
             if (title == 'GET_ACTION') {
@@ -114,14 +116,12 @@ async function run(): Promise<void> {
             }
         }
 
-        if (title_url !== '') {
-            embed.url = title_url
-            if (embed.url.length == 0) {
-                if (github.context.payload.pull_request) {
-                    embed.url = github.context.payload.pull_request.html_url
-                } else if (github.context.payload.issue) {
-                    embed.url = github.context.payload.issue.html_url
-                }
+        embed.url = title_url
+        if (embed.url.length === 0) {
+            if (github.context.payload.pull_request) {
+                embed.url = github.context.payload.pull_request.html_url
+            } else if (github.context.payload.issue) {
+                embed.url = github.context.payload.issue.html_url
             }
         }
 

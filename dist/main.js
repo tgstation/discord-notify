@@ -40288,13 +40288,15 @@ async function run() {
                     payload += ' Opened by';
                     break;
                 case 'closed':
-                    payload += ' Closed by';
+                    if (context.payload.pull_request?.merged) {
+                        payload += ' Merged by';
+                    }
+                    else {
+                        payload += ' Closed by';
+                    }
                     break;
                 case 'reopened':
                     payload += ' Reopened by';
-            }
-            if (context.payload.pull_request?.merged) {
-                payload += ' Merged by';
             }
             payload += ` ${user}`;
             if (title == 'GET_ACTION') {
@@ -40331,15 +40333,13 @@ async function run() {
                 };
             }
         }
-        if (title_url !== '') {
-            embed.url = title_url;
-            if (embed.url.length == 0) {
-                if (context.payload.pull_request) {
-                    embed.url = context.payload.pull_request.html_url;
-                }
-                else if (context.payload.issue) {
-                    embed.url = context.payload.issue.html_url;
-                }
+        embed.url = title_url;
+        if (embed.url.length === 0) {
+            if (context.payload.pull_request) {
+                embed.url = context.payload.pull_request.html_url;
+            }
+            else if (context.payload.issue) {
+                embed.url = context.payload.issue.html_url;
             }
         }
         if (include_image) {
