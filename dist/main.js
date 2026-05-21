@@ -40333,6 +40333,14 @@ async function run() {
         }
         if (title_url !== '') {
             embed.url = title_url;
+            if (embed.url.length == 0) {
+                if (context.payload.pull_request) {
+                    embed.url = context.payload.pull_request.html_url;
+                }
+                else if (context.payload.issue) {
+                    embed.url = context.payload.issue.html_url;
+                }
+            }
         }
         if (include_image) {
             embed.image = {

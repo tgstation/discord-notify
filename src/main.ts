@@ -116,6 +116,13 @@ async function run(): Promise<void> {
 
         if (title_url !== '') {
             embed.url = title_url
+            if (embed.url.length == 0) {
+                if (github.context.payload.pull_request) {
+                    embed.url = github.context.payload.pull_request.html_url
+                } else if (github.context.payload.issue) {
+                    embed.url = github.context.payload.issue.html_url
+                }
+            }
         }
 
         if (include_image) {
