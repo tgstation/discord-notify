@@ -79,7 +79,7 @@ async function run(): Promise<void> {
                 case 'reopened':
                     payload += ' Reopened by'
             }
-            payload += ` ${user}`
+            payload += ` ${user}**`
             if (title == 'GET_ACTION') {
                 embed.title = payload
             }
