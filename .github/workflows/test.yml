@@ -1,32 +1,40 @@
-name: 'build-test'
-on: # rebuild any PRs and main branch changes
-  pull_request:
+name: 'test'
+on: 
   push:
     branches:
-      - main
-      - 'releases/*'
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
-  build: # make sure build/ci work properly
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - run: |
-          npm install
-      - run: |
-          npm run all
-  test: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: discord notify all options
-        uses: ./ # Uses an action in the root directory
-        with:
-          webhook_url: https://http-echo-stegzilla.herokuapp.com
-          title: Test title
-          message: 'test message'
-          include_image: true
-          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          username: TestUsername
-          colour: '#3371FF'
-          #custom_image_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+       - uses: actions/checkout@v6
+       - name: Setup node
+         uses: actions/setup-node@v6
+         with:
+            node-version: 24.x
+       - name: Install dependencies
+         run: |
+                  npm ci
+                  npm ls
+       - name: discord notify all options
+         uses: ./ # Uses an action in the root directory
+         with:
+            webhook_url: https://discord-notify-tg-station.requestcatcher.com/
+            title: Test Title
+            message: Test Message
+            include_image: true
+            avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+            username: TestUsername
+            colour: '#3371FF'
+       - name: Validate dist
+         run: |
+              npm i -g rollup
+              cp dist/main.js index_pr.js
+              rm -rf out dist
+              npm run build
+              npm run package
+              diff dist/main.js index_pr.js
