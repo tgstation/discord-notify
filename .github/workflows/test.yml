@@ -23,7 +23,7 @@ jobs:
        - name: discord notify all options
          uses: ./ # Uses an action in the root directory
          with:
-            webhook_url: https://discord-notify-tg-station.requestcatcher.com/
+            webhook_url: https://discord.com/api/webhooks/1514217727437307924/Bu_5L1ACFwG0XOCjzNOf4O-dJvr7HKFdFeLByroyOOGHRSVb-23m94S8mqMQrCYBqazn
             title: Test Title
             message: Test Message
             include_image: true
