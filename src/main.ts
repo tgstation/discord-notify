@@ -70,7 +70,7 @@ async function run(): Promise<void> {
                 user = github.context.actor
             }
 
-            let payload = `**${type} #${github.context.issue.number}`
+            let payload = `${type} #${github.context.issue.number}`
             switch (action) {
                 case 'opened':
                     payload += ' Opened by'
@@ -86,9 +86,9 @@ async function run(): Promise<void> {
                 case 'reopened':
                     payload += ' Reopened by'
             }
-            payload += ` ${user}**`
+            payload += ` ${user}`
 
-            embed.description = payload
+            embed.description = `**${payload}**`
         }
 
         if (colour !== '') {

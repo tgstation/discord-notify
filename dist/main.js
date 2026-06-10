@@ -40290,7 +40290,7 @@ async function run() {
             if (action == 'closed' || action == 'reopened') {
                 user = context.actor;
             }
-            let payload = `**${type} #${context.issue.number}`;
+            let payload = `${type} #${context.issue.number}`;
             switch (action) {
                 case 'opened':
                     payload += ' Opened by';
@@ -40306,8 +40306,8 @@ async function run() {
                 case 'reopened':
                     payload += ' Reopened by';
             }
-            payload += ` ${user}**`;
-            embed.description = payload;
+            payload += ` ${user}`;
+            embed.description = `**${payload}**`;
         }
         if (colour !== '') {
             embed.color = parseInt(colour.replace('#', ''), 16);
