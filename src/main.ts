@@ -39,14 +39,21 @@ async function run(): Promise<void> {
         const include_image = core.getBooleanInput('include_image')
         const custom_image_url = core.getInput('custom_image_url')
         const title_url = core.getInput('title_url')
+        const action = github.context.payload.action
 
         const embed: Embed = {
             title: title,
             description: message
         }
 
-        const action = github.context.payload.action
-        if (title === 'GET_ACTION' || message === 'GET_ACTION') {
+        if (title === 'GET_ACTION') {
+            if (github.context.payload.pull_request) {
+                embed.title = `${github.context.payload.pull_request.user.login}-${github.context.payload.pull_request.title}`
+            } else if (github.context.payload.issue) {
+                embed.title = `${github.context.payload.issue.user.login}-${github.context.payload.issue.title}`
+            }
+        }
+        if (message === 'GET_ACTION') {
             let user = 'Unknown'
             let type = 'Unknown'
             if (github.context.payload.pull_request) {
@@ -63,7 +70,7 @@ async function run(): Promise<void> {
                 user = github.context.actor
             }
 
-            let payload = `**${type} #${github.context.issue.number}`
+            let payload = `${type} #${github.context.issue.number}`
             switch (action) {
                 case 'opened':
                     payload += ' Opened by'
@@ -79,13 +86,9 @@ async function run(): Promise<void> {
                 case 'reopened':
                     payload += ' Reopened by'
             }
-            payload += ` ${user}**`
-            if (title == 'GET_ACTION') {
-                embed.title = payload
-            }
-            if (message === 'GET_ACTION') {
-                embed.description = payload
-            }
+            payload += ` ${user}`
+
+            embed.description = `**${payload}**`
         }
 
         if (colour !== '') {

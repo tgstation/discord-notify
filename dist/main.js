@@ -40260,12 +40260,20 @@ async function run() {
         const include_image = getBooleanInput('include_image');
         const custom_image_url = getInput('custom_image_url');
         const title_url = getInput('title_url');
+        const action = context.payload.action;
         const embed = {
             title: title,
             description: message
         };
-        const action = context.payload.action;
-        if (title === 'GET_ACTION' || message === 'GET_ACTION') {
+        if (title === 'GET_ACTION') {
+            if (context.payload.pull_request) {
+                embed.title = `${context.payload.pull_request.user.login}-${context.payload.pull_request.title}`;
+            }
+            else if (context.payload.issue) {
+                embed.title = `${context.payload.issue.user.login}-${context.payload.issue.title}`;
+            }
+        }
+        if (message === 'GET_ACTION') {
             let user = 'Unknown';
             let type = 'Unknown';
             if (context.payload.pull_request) {
@@ -40282,7 +40290,7 @@ async function run() {
             if (action == 'closed' || action == 'reopened') {
                 user = context.actor;
             }
-            let payload = `**${type} #${context.issue.number}`;
+            let payload = `${type} #${context.issue.number}`;
             switch (action) {
                 case 'opened':
                     payload += ' Opened by';
@@ -40298,13 +40306,8 @@ async function run() {
                 case 'reopened':
                     payload += ' Reopened by';
             }
-            payload += ` ${user}**`;
-            if (title == 'GET_ACTION') {
-                embed.title = payload;
-            }
-            if (message === 'GET_ACTION') {
-                embed.description = payload;
-            }
+            payload += ` ${user}`;
+            embed.description = `**${payload}**`;
         }
         if (colour !== '') {
             embed.color = parseInt(colour.replace('#', ''), 16);
