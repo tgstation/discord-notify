@@ -40267,10 +40267,10 @@ async function run() {
         };
         if (title === 'GET_ACTION') {
             if (context.payload.pull_request) {
-                embed.title = `${context.payload.pull_request.user.login}-${context.payload.pull_request.title}`;
+                embed.title = `${context.payload.pull_request.user.login} - ${context.payload.pull_request.title}`;
             }
             else if (context.payload.issue) {
-                embed.title = `${context.payload.issue.user.login}-${context.payload.issue.title}`;
+                embed.title = `${context.payload.issue.user.login} - ${context.payload.issue.title}`;
             }
         }
         if (message === 'GET_ACTION') {
