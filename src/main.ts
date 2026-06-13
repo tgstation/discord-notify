@@ -48,9 +48,9 @@ async function run(): Promise<void> {
 
         if (title === 'GET_ACTION') {
             if (github.context.payload.pull_request) {
-                embed.title = `${github.context.payload.pull_request.user.login}-${github.context.payload.pull_request.title}`
+                embed.title = `${github.context.payload.pull_request.user.login} - ${github.context.payload.pull_request.title}`
             } else if (github.context.payload.issue) {
-                embed.title = `${github.context.payload.issue.user.login}-${github.context.payload.issue.title}`
+                embed.title = `${github.context.payload.issue.user.login} - ${github.context.payload.issue.title}`
             }
         }
         if (message === 'GET_ACTION') {
